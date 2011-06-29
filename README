@@ -1,0 +1,35 @@
+Memorizing lots of passwords sucks.
+Writing down passwords sucks.
+Using the same password everywhere sucks.
+Using password vaults sucks.
+Two factor authentication is expensive. And, therefore, sucks.
+
+How it works:
+
+With Passable, you remember a long base phrase that only you know. Something
+like:
+
+The rain in spain falls mainly on the plain
+(But make up your own)
+
+Whenever you need a password, you use a short identifier. For instance, for a
+gmail account, the identifier might be:
+
+gmail bob
+(But make up your own)
+
+Passable generates a very strong password which is copied to the clipboard.
+You don’t even need to look at the generated password, although you can if you
+really want to. You just paste it in where you need it.
+
+Every site you use gets a different password without you having to remember
+different passwords for every site.
+
+Some technical details:
+
+-The app is written using Appcelerator Titanium: http://www.appcelerator.com/
+-A pure javascript sha1 library is used to encode passwords
+-For "Superman Strong" (40 chars) and "Very Strong" (20 chars) modes, hex
+  encoding is used.
+-For "Extremely Strong" (28 chars) and "Strong" (14 chars) modes, b64 encoding
+  is used.

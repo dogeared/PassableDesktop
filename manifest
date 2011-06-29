@@ -1,0 +1,20 @@
+#appname:PassableDesktop
+#appid:com.afitnerd.PassableDesktop
+#publisher:Micah Silverman
+#image:default_app_logo.png
+#url:http://afitnerd.com/projects/passable
+#guid:e3aa36fd-bf29-4560-b78f-a6e946236d75
+#desc:Easy, secure password management
+#type:desktop
+runtime:1.2.0.RC2
+tiapp:1.2.0.RC2
+tifilesystem:1.2.0.RC2
+tiplatform:1.2.0.RC2
+tiui:1.2.0.RC2
+ticodec:1.2.0.RC2
+tidatabase:1.2.0.RC2
+timedia:1.2.0.RC2
+timonkey:1.2.0.RC2
+tinetwork:1.2.0.RC2
+tiprocess:1.2.0.RC2
+tiworker:1.2.0.RC2

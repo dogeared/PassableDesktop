@@ -1,0 +1,69 @@
+body,html { margin: 0; padding: 0; background: #FFFFFF; }
+.form { padding: 20px 20px 10px; background: #FFFFFF; }
+.form p { margin: 0 0 10px 0; float:left; clear:both; display: block; }
+.form .input { width: 200px; padding: 5px; border: 1px solid #465450; margin: 0 0 5px 0; font: bold 16px/20px Helvetiva, Arial, sans-serif; }
+.form .inputPass { width: 405px; padding: 5px; border: 1px solid #465450; margin: 0 0 5px 0; font: bold 16px/20px Helvetiva, Arial, sans-serif; }
+.form .check { padding: 5px; border: 1px solid #A5C2C8; margin: 0 0 5px 0; font: bold 16px/20px Helvetiva, Arial, sans-serif; }
+.form .input.empty { color: #aaa; }
+
+table, th, td {
+  font: bold 14px Helvetica, Arial, sans-serif;
+  color: #465450;
+}
+
+#infoButton {
+  position: absolute;
+  left:     420px;
+  top:      270px;
+}
+
+#info {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 435px;
+  height: 275px;
+  text-align: center;
+  margin: 5px 5px 5px 5px;
+  font: bold 14px Helvetica, Arial, sans-serif;
+  color: #444;
+  display: none;
+}
+
+/*******************
+ * fancy button
+ ******************/
+.clear { 
+    overflow: hidden;
+    width: 100%;
+}
+
+a.button {
+    background: transparent url('../images/bg_button_a.gif') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    float: left;
+    font: bold 16px arial, sans-serif;
+    height: 24px;
+    margin-right: 6px;
+    padding-right: 18px; 
+    text-decoration: none;
+}
+
+a.button span {
+    background: transparent url('../images/bg_button_span.gif') no-repeat;
+    display: block;
+    line-height: 14px;
+    padding: 5px 0 5px 18px;
+}
+
+a.button:active {
+    background-position: bottom right;
+    color: #000;
+    outline: none; 
+}
+
+a.button:active span {
+    background-position: bottom left;
+    padding: 6px 0 4px 18px; 
+}

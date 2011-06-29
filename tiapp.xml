@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <description>Easy, secure password management</description>
+<!-- These values are edited/maintained by Titanium Developer -->
+<id>com.afitnerd.PassableDesktop</id>
+<name>PassableDesktop</name>
+<version>1.0</version>
+<publisher>Micah Silverman</publisher>
+<url>http://afitnerd.com/projects/passable</url>
+<icon>default_app_logo.png</icon>
+<copyright>2011 by Micah Silverman</copyright>
+<!-- Window Definition - these values can be edited -->
+<window>
+<id>initial</id>
+<title>PassableDesktop</title>
+<url>app://index.html</url>
+<width>460</width>
+<max-width>3000</max-width>
+<min-width>460</min-width>
+<height>300</height>
+<max-height>3000</max-height>
+<min-height>300</min-height>
+<fullscreen>false</fullscreen>
+<resizable>false</resizable>
+<chrome scrollbars="true">true</chrome>
+<maximizable>false</maximizable>
+<minimizable>true</minimizable>
+<closeable>true</closeable>
+</window>
+</ti:app>

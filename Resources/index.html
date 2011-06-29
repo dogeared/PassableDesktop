@@ -1,0 +1,262 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css"
+      href="css/ui-theme/jquery-ui-1.8.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="css/pygments.css"/>
+    <link rel="stylesheet" type="text/css" href="css/screen.css"/>
+    <link rel="stylesheet" type="text/css" href="css/tipTipX.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.multiselect.css"/>
+
+    <script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <script src="js/jquery-ui-1.8.custom.min.js" type="text/javascript"></script>
+    <script src="js/jquery.multiselect.min.js" type="text/javascript"></script>
+    <script src="js/jquery.showpassword.js" type="text/javascript" 
+      charset="utf-8"></script>
+    <script src="js/jquery.tipTipX.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.tpl_layout1.1.6.js" type="text/javascript" 
+      charset="utf-8"></script>
+    <script src="helpers/sha1.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    var focusSet = false;
+    function isNotValid(val, id) {
+      if (val === '') {
+        $(id).tipTipNow({ position: 'top' });
+        setTimeout(function() {
+          $(id).tipTipClear();
+        }, 3000);
+        Titanium.UI.Clipboard.setText("");
+        $('#password').val("");
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    
+    function showInfo() {
+      $('#content').hide();
+      $('#info').show();
+    }
+    
+    function hideInfo() {
+      $('#info').hide();
+      $('#content').show();      
+    }
+
+    function doPass() {
+      var baseVal = $('#base').val();
+      var idVal = $('#identifier').val();
+
+      if (isNotValid(baseVal, '#baseTip') || isNotValid(idVal, '#idTip')) {
+        return;
+      }
+
+      $('#passwordTip').tipTipNow({ position: 'top' });
+      setTimeout(function() {
+        $('#passwordTip').tipTipClear();
+      }, 3000);
+
+      var raw = baseVal + idVal;
+      var pw = "";
+      var halfLength = 0;
+      var strength = $('#strength option:selected').val();
+      
+      var slashPos = strength.indexOf("/");
+      var mode = strength.substring(0,slashPos);
+      var half = (strength.substring(slashPos+1) === 'half');
+      
+      if (mode === 'hex') {
+        pw = hex_sha1(raw);
+        halfLength = 20;
+      }
+      else if (mode === 'b64') {
+        pw = b64_sha1(raw);
+        halfLength = 14;
+      }
+      if (half) {
+        pw = pw.substring(0, halfLength);
+      }
+      if ($('#clear_base').is(':checked')) {
+        $('#base').val("");
+      }
+      if ($('#clear_id').is(':checked')) {
+        $('#identifier').val("");
+      }
+      $('#password').val(pw);
+
+      // save password to the clipboard
+      Titanium.UI.Clipboard.setText(pw);
+      $('#identifier').focus();
+      doClearTime();
+    }
+    
+    function doClearTime() {
+      if (clearTimeId) {
+       clearTimeout(clearTimeId); 
+      }
+      clearTimeId = setTimeout(function() {
+        clearTimeId=false;
+        $('#password').val("");
+      },
+      $('#clearTime').val()*1000*60);
+    }
+    var clearTimeId=false;
+  </script>
+</head>
+<body>
+  <div id="content">
+  <p/>
+  <div class="form">
+  <form name="passForm">
+    <table>
+      <tr>
+        <td>
+          Secret Phrase:<br/>
+          <span id="baseTip" title="Type a Secret Phrase.">
+            <input class="input" type="password" id="base" name="base" size="20">
+          </span>
+        </td>
+        <td>
+          Account Nickname:<br/>
+          <span id="idTip" title="Type an Account Nickname.">
+            <input class="input" type="password" id="identifier" name="identifier" size="20">
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          Generated Password:<br/>
+          <span id="passwordTip" title="Your password has been copied. Paste away!">
+            <input class="inputPass" type="password" id="password" name="password" size="50" readonly>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+			<select name="strength" id="strength">
+				<option value="hex/full" selected>Superman Strong - 40 chars</option>
+				<option value="b64/full">Extremely Strong - 28 chars</option>
+				<option value="hex/half">Very Strong - 20 chars</option>
+				<option value="b64/half">Strong - 14 chars</option>
+			</select>
+			<a class="button" id="generate" onclick="doPass()" href="#"><span>Generate</span></a>
+        </td>
+      <tr>
+      <tr>
+        <td colspan="2">
+          clear password in
+          <select name="clearTime" id="clearTime" onchange="doClearTime()">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select> minutes
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <br/>show text of:<br/>
+          <div style="display:inline" class="show_base"></div>
+          <div style="display:inline" class="show_id"></div><br/>
+          <div style="display:inline" class="show_password"></div>
+        </td>
+        <td valign="top">
+          <br/>clear after generate:<br/>
+          <input type="checkbox" id="clear_base" name="clear_base"> secret
+          <input type="checkbox" id="clear_id" name="clear_id" checked> nickname
+        </td>
+      </tr>
+    </table>
+  </form>
+  </div>
+  <div id="infoButton">
+    <img onclick="showInfo()" src="images/info.png">
+  </div>
+  </div>
+  
+  <div id ="info">
+    <p>PassableDesktop</p>
+    <p>
+      Developed by Micah Silverman<br/>
+      Copyright 2011<br/>
+      <a href="#" onclick="Titanium.Platform.openURL('http://afitnerd.com')">http://afitnerd.com</a>
+    </p>
+    <p>
+      Javascript Sha1 implementation<br/>
+      by Paul Johnston, et al.<br/>
+       <a href="#" onclick="Titanium.Platform.openURL('http://pajhome.org.uk/crypt/md5')">http://pajhome.org.uk/crypt/md5</a>
+    </p>
+    <p>
+      Original idea by Brad Tilley<br/>
+      16 Systems<br/>
+      <a href="#" onclick="Titanium.Platform.openURL('http://16s.us/sha1_pass/')">http://16s.us/sha1_pass/</a>
+    </p>
+    <p>
+      Memorizing lots of passwords sucks.<br/>
+      Writing down passwords sucks.<br/>
+      Using the same password sucks.<br/>
+      Server side password solutions suck.<br/>
+      Two factor authentication is expensive.<br/>
+      And, therefore, sucks.
+    </p>
+    <p>
+      How it works:<br/><br/>
+      
+	  With Passable, you remember a long secret phrase that only you know. Something like:<br/><br/>
+	
+	  The rain in spain falls mainly on the plain<br/>
+	  (But make up your own)<br/><br/>
+
+      Whenever you need a password, you use an account nickname. For instance, for a gmail account, the identifier might be:<br/><br/>
+
+	  gmail bob<br/>
+	  (But make up your own)<br/><br/>
+
+	  Passable generates a very strong password which is copied to the clipboard. You don’t even need to look at the generated password 
+	  (although you can). You just paste it in where you need it.<br/><br/>
+	  
+	  Every site you use gets a different password without you having to remember different passwords for every site.
+    </p>
+    <p>
+      Check out <a href="#" onclick="Titanium.Platform.openURL('http://16s.us/sha1_pass/')">http://16s.us/sha1_pass/</a> for a more technical explanation.
+    </p>
+    <p>
+      <!-- <a class="button" onclick="hideInfo()" href="#"><span>Close</span></a> -->
+      <button onclick="hideInfo()">Close</button>
+    </p>
+    <p><br/></p>
+  </div>
+  <script type="text/javascript">
+    // <![CDATA[
+    $(document).ready(function() {
+      $('#base').showPassword('.show_base', { text: 'secret', className: 'input', name: 'my_base' });
+      $('#identifier').showPassword('.show_id', { text: 'nickname', className: 'input', name: 'my_id' });
+      $('#password').showPassword('.show_password', { text: 'password', className: 'inputPass', name: 'my_pass' });
+
+      $('#generate').bind('mouseout', function() {
+        $('#passwordTip').tipTipClear();
+      });
+      
+      $("input").bind('keyup', function(event) {
+        if (event.keyCode === 13) {
+          doPass();
+        }
+      });
+      
+      $("#strength").multiselect({multiple: false, header: false, selectedList: 1, height: 120, minWidth: 275});
+      $(window).blur(function() {
+      	if (!focusSet) {
+      	  focusSet = true;
+      	  $(window).focus(function() {
+      	    $('#identifier').focus();
+      	  });
+      	} 
+      });
+      $('#base').focus();
+    });
+    // ]]>
+  </script>
+  </body>
+</html>
