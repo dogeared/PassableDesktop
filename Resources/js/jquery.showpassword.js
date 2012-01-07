@@ -1,48 +1,113 @@
-/* jQuery showPassword Plugin Version 1.0
- * @author Byron Rode
- * @website http://www.prothemer.com/blog/2009/07/02/new-jquery-plugin-targeting-usability-for-password-masking-on-forms
- * @requires jQuery v1.3.x
- * @license GPL/MIT
- */
+/*
+*	@name							Show Password
+*	@descripton						
+*	@version						1.3
+*	@requires						Jquery 1.5
+*
+*	@author							Jan Jarfalk
+*	@author-email					jan.jarfalk@unwrongest.com
+*	@author-website					http://www.unwrongest.com
+*
+*	@special-thanks					Michel Gratton
+*
+*	@licens							MIT License - http://www.opensource.org/licenses/mit-license.php
+*/
+(function($){
+     $.fn.extend({
+         showPassword: function(c) {	
+            
+            // Setup callback object
+			var callback 	= {'fn':null,'args':{}}
+				callback.fn = c;
+			
+			// Clones passwords and turn the clones into text inputs
+			var cloneElement = function( element ) {
+				
+				var $element = $(element);
+					
+				$clone = $("<input />");
+					
+				// Name added for JQuery Validation compatibility
+				// Element name is required to avoid script warning.
+				$clone.attr({
+					'type'		:	'text',
+					'class'		:	$element.attr('class'),
+					'style'		:	$element.attr('style'),
+					'size'		:	$element.attr('size'),
+					'name'		:	$element.attr('name')+'-clone',
+					'tabindex' 	:	$element.attr('tabindex')
+				});
+					
+				return $clone;
+			
+			};
+			
+			// Transfers values between two elements
+			var update = function(a,b){
+				b.val(a.val());
+			};
+			
+			// Shows a or b depending on checkbox
+			var setState = function( checkbox, a, b ){
+			
+				if(checkbox.is(':checked')){
+					update(a,b);
+					b.show();
+					a.hide();
+				} else {
+					update(b,a);
+					b.hide();
+					a.show();
+				}
+				
+			};
+            
+            return this.each(function() {
+            	
+            	var $input					= $(this),
+            		$checkbox 				= $($input.data('typetoggle'));
+            	
+            	// Create clone
+				var $clone = cloneElement($input);
+					$clone.insertAfter($input);
+				
+				// Set callback arguments
+            	if(callback.fn){	
+            		callback.args.input		= $input;
+            		callback.args.checkbox	= $checkbox;
+					callback.args.clone 	= $clone;
+            	}
+				
 
-;(function($){
-  $.fn.showPassword = function(ph, options){
+				
+				$checkbox.bind('click', function() {
+					setState( $checkbox, $input, $clone );
+				});
+				
+				$input.bind('keyup', function() {
+					update( $input, $clone )
+				});
+				
+				$clone.bind('keyup', function(){ 
+					update( $clone, $input );
+					
+					// Added for JQuery Validation compatibility
+					// This will trigger validation if it's ON for keyup event
+					$input.trigger('keyup');
+					
+				});
+				
+				// Added for JQuery Validation compatibility
+				// This will trigger validation if it's ON for blur event
+				$clone.bind('blur', function() { $input.trigger('focusout'); });
+				
+				setState( $checkbox, $input, $clone );
+				
+				if( callback.fn ){
+					callback.fn( callback.args );
+				}
 
-    var spinput = $(this);
-
-    $.fn.showPassword.checker = function(cbid, inid){
-      $('input[id="'+cbid+'"]').click(function(){
-        if($(this).attr('checked')){
-          $('input.'+inid).val(spinput.val()).attr('id', spinput.attr('id')).attr('name',spinput.attr('name'));
-          $('input.'+inid).css('display', 'inline');
-          spinput.css('display', 'none').removeAttr('id').removeAttr('name');
-        }else{
-          spinput.val($('input.'+inid).val()).attr('id', $('input.'+inid).attr('id')).attr('name', $('input.'+inid).attr('name'));
-          spinput.css('display', 'inline');
-          $('input.'+inid).css('display', 'none').removeAttr('id').removeAttr('name');
+            });
         }
-      });
-    }
-
-    return this.each(function(){
-      var def = { classname: 'class', name: 'password-input', text: 'Show Password' };
-      var spcbid = 'spcb_' + parseInt(Math.random() * 1000);
-      var spinid = spcbid.replace('spcb_', 'spin_');
-      if (spinput.attr('class') !== '') { var spclass = spinid+' '+spinput.attr('class'); }else{ var spclass = spinid; }
-      if(typeof ph == 'object'){ $.extend(def, ph); }
-      if(typeof options == 'object'){ $.extend(def, options); }
-      var spname = def.name;
-      // define the class name of the object
-      if(def.classname==''){ theclass=''; }else{ theclass=' class="'+def.clasname+'"'; }
-      // build the checkbox
-      $(this).before('<input type="text" value="" class="'+spclass+'" style="display: none;" '+(spinput.attr('readonly')?'readonly':'')+'/>');
-      var thecheckbox = '<label><input'+theclass+' type="checkbox" id="'+spcbid+'" name="'+spname+'" value="sp" />'+def.text+'</label>';
-      // check if there is a request to place the checkbox in a specific placeholder.
-      // if not, place directly after the input.
-      if(ph == 'object' || typeof ph == 'undefined'){ $(this).after(thecheckbox); }else{ $(ph).html(thecheckbox); }
-      $.fn.showPassword.checker(spcbid, spinid);
-      return this;
     });
-  }
-})
-(jQuery);
+})(jQuery);
